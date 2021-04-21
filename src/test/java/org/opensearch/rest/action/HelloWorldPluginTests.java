@@ -16,6 +16,6 @@ public class HelloWorldPluginTests extends OpenSearchTestCase {
     public void testBuildHelloWorldResponse() {
         String name = "What's in a name?";
         assertThat(HelloWorldService.buildResponse(name).content().utf8ToString(),
-                equalTo("Hi" + name + "! Your plugin is installed and working:)"));
+                equalTo("Hi " + name + "! Your plugin is installed and working:)"));
     }
 }

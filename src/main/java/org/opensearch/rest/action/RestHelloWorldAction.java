@@ -36,7 +36,7 @@ public class RestHelloWorldAction extends BaseRestHandler {
 
     @Override
     protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) throws IOException {
-        String name = request.hasContent()? " " + request.contentParser().mapStrings().get("name"): "";
+        String name = request.hasContent()? request.contentParser().mapStrings().get("name"): "";
 
         return channel -> {
             try {
