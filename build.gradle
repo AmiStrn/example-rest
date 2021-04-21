@@ -1,0 +1,39 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'opensearch.opensearchplugin'
+apply plugin: 'opensearch.yaml-rest-test'
+
+opensearchplugin {
+    name 'my-rest-plugin'
+    description 'Custom REST plugin'
+    classname 'org.opensearch.rest.action.HelloWorldPlugin'
+    licenseFile rootProject.file('LICENSE.txt')
+    noticeFile rootProject.file('NOTICE.txt')
+}
+
+
+// disabling some unnecessary validations for this plugin
+testingConventions.enabled = false
+loggerUsageCheck.enabled = false
+validateNebulaPom.enabled = false
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath "org.opensearch.gradle:build-tools:1.0.0-SNAPSHOT"
+    }
+}
+
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    // required for the yaml test to run
+    yamlRestTestImplementation 'org.apache.logging.log4j:log4j-core:2.11.1'
+}
