@@ -35,7 +35,8 @@ public class HelloWorldPluginIT extends OpenSearchIntegTestCase {
 
     public void testPluginInstalled() throws IOException {
         Response response = createRestClient().performRequest(new Request("GET", "/_cat/plugins"));
-        logger.info("response body: {}", EntityUtils.toString(response.getEntity()));
-        assertThat(EntityUtils.toString(response.getEntity()), containsString("my-rest-plugin"));
+        String body = EntityUtils.toString(response.getEntity());
+        logger.info("response body: {}", body);
+        assertThat(body, containsString("my-rest-plugin"));
     }
 }
