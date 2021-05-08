@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 @ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 @OpenSearchIntegTestCase.ClusterScope(scope = OpenSearchIntegTestCase.Scope.SUITE)
@@ -36,7 +37,31 @@ public class HelloWorldPluginIT extends OpenSearchIntegTestCase {
     public void testPluginInstalled() throws IOException {
         Response response = createRestClient().performRequest(new Request("GET", "/_cat/plugins"));
         String body = EntityUtils.toString(response.getEntity());
+
         logger.info("response body: {}", body);
         assertThat(body, containsString("my-rest-plugin"));
+    }
+
+    public void testPluginIsWorkingNoValue() throws IOException {
+        Response response = createRestClient().performRequest(new Request("GET", "/hello-world"));
+        String body = EntityUtils.toString(response.getEntity());
+
+        logger.info("response body: {}", body);
+        assertThat(body, equalTo("Hi! Your plugin is installed and working:)"));
+    }
+
+    public void testPluginIsWorkingWithValue() throws IOException {
+        Request request = new Request("POST", "/hello-world");
+        request.setEntity(
+                new NStringEntity(
+                        "{\"name\":\"Amitai\"}",
+                        ContentType.APPLICATION_JSON
+                )
+        );
+        Response response = createRestClient().performRequest(request);
+        String body = EntityUtils.toString(response.getEntity());
+
+        logger.info("response body: {}", body);
+        assertThat(body, equalTo("Hi Amitai! Your plugin is installed and working:)"));
     }
 }
