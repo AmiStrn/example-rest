@@ -9,6 +9,7 @@
 
 package org.opensearch.rest.action;
 
+import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
 import org.apache.http.util.EntityUtils;
 import org.opensearch.client.Request;
 import org.opensearch.client.Response;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
+@ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 @OpenSearchIntegTestCase.ClusterScope(scope = OpenSearchIntegTestCase.Scope.SUITE)
 public class HelloWorldPluginIT extends OpenSearchIntegTestCase {
 
