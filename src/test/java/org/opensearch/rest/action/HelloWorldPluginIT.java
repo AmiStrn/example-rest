@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
-@OpenSearchIntegTestCase.ClusterScope(scope = OpenSearchIntegTestCase.Scope.TEST, numDataNodes = 0, numClientNodes = 0)
+@OpenSearchIntegTestCase.ClusterScope(scope = OpenSearchIntegTestCase.Scope.SUITE)
 public class HelloWorldPluginIT extends OpenSearchIntegTestCase {
 
     @Override
