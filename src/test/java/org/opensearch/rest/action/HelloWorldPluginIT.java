@@ -39,23 +39,4 @@ public class HelloWorldPluginIT extends OpenSearchIntegTestCase {
         logger.info("response body: {}", EntityUtils.toString(response.getEntity()));
         assertThat(EntityUtils.toString(response.getEntity()), containsString("my-rest-plugin"));
     }
-
-    public void testPluginIsWorkingNoValue() throws IOException {
-        Response response = createRestClient().performRequest(new Request("GET", "/hello-world"));
-        logger.info("response body: {}", EntityUtils.toString(response.getEntity()));
-        assertThat(EntityUtils.toString(response.getEntity()), equalTo("Hi! Your plugin is installed and working:)"));
-    }
-
-    public void testPluginIsWorkingWithValue() throws IOException {
-        Request request = new Request("POST", "/hello-world");
-        request.setEntity(
-                new NStringEntity(
-                        "{\"name\":\"Amitai\"}",
-                        ContentType.APPLICATION_JSON
-                )
-        );
-        Response response = createRestClient().performRequest(request);
-        logger.info("response body: {}", EntityUtils.toString(response.getEntity()));
-        assertThat(EntityUtils.toString(response.getEntity()), equalTo("Hi Amitai! Your plugin is installed and working:)"));
-    }
 }
