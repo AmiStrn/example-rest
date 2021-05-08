@@ -9,7 +9,9 @@
 
 package org.opensearch.rest.action;
 
+import org.apache.http.util.EntityUtils;
 import org.opensearch.client.Request;
+import org.opensearch.client.Response;
 import org.opensearch.plugins.Plugin;
 import org.opensearch.test.OpenSearchIntegTestCase;
 
@@ -25,6 +27,7 @@ public class HelloWorldPluginIT extends OpenSearchIntegTestCase {
     }
 
     public void testPluginExists() throws IOException {
-        createRestClient().performRequest(new Request("GET", "/_cat/plugins"));
+        Response response = createRestClient().performRequest(new Request("GET", "/_cat/plugins"));
+        logger.info("response body: {}", EntityUtils.toString(response.getEntity()));
     }
 }
