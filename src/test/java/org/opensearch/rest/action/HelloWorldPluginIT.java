@@ -10,6 +10,8 @@
 package org.opensearch.rest.action;
 
 import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
+import org.apache.http.entity.ContentType;
+import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.util.EntityUtils;
 import org.opensearch.client.Request;
 import org.opensearch.client.Response;
@@ -19,9 +21,7 @@ import org.opensearch.test.OpenSearchIntegTestCase;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -48,9 +48,14 @@ public class HelloWorldPluginIT extends OpenSearchIntegTestCase {
 
     public void testPluginIsWorkingWithValue() throws IOException {
         Request request = new Request("POST", "/hello-world");
-        request.addParameters(Map.of("name", "amitai"));
+        request.setEntity(
+                new NStringEntity(
+                        "{\"name\":\"Amitai\"}",
+                        ContentType.APPLICATION_JSON
+                )
+        );
         Response response = createRestClient().performRequest(request);
         logger.info("response body: {}", EntityUtils.toString(response.getEntity()));
-        assertThat(EntityUtils.toString(response.getEntity()), equalTo("Hi amitai! Your plugin is installed and working:)"));
+        assertThat(EntityUtils.toString(response.getEntity()), equalTo("Hi Amitai! Your plugin is installed and working:)"));
     }
 }
