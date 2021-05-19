@@ -14,12 +14,21 @@ opensearchplugin {
 }
 
 
-// disabling some unnecessary validations for this plugin
+// Allow test cases to be named Tests without having to be inherited from LuceneTestCase.
+// see https://github.com/elastic/elasticsearch/blob/323f312bbc829a63056a79ebe45adced5099f6e6/buildSrc/src/main/java/org/elasticsearch/gradle/precommit/TestingConventionsTasks.java
 testingConventions.enabled = false
+
+licenseHeaders.enabled = true
+dependencyLicenses.enabled = false
+thirdPartyAudit.enabled = false
 loggerUsageCheck.enabled = false
-validateNebulaPom.enabled = false
 
 buildscript {
+    ext {
+        opensearch_group = "org.opensearch"
+        opensearch_version = System.getProperty("opensearch.version", "1.0.0-beta1")
+    }
+
     repositories {
         mavenCentral()
         jcenter()
@@ -27,7 +36,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.opensearch.gradle:build-tools:1.0.0-beta1"
+        classpath "${opensearch_group}.gradle:build-tools:${opensearch_version}"
     }
 }
 
@@ -40,6 +49,13 @@ dependencies {
     yamlRestTestImplementation 'org.apache.logging.log4j:log4j-core:2.11.1'
 }
 
+test {
+    include '**/*Tests.class'
+    systemProperty 'tests.security.manager', 'false'
+}
+
+// See package README.md for details on using these tasks.
+def _numNodes = findProperty('numNodes') as Integer ?: 1
 
 task integTest(type: RestIntegTestTask) {
     description = "Run tests against a cluster"
@@ -56,7 +72,7 @@ integTest {
         def isDebuggingCluster = getDebug() || System.getProperty("test.debug") != null
         systemProperty 'cluster.debug', isDebuggingCluster
         // Set number of nodes system property to be used in tests
-        systemProperty 'cluster.number_of_nodes', "1"
+        systemProperty 'cluster.number_of_nodes', "${_numNodes}"
         // There seems to be an issue when running multi node run or integ tasks with unicast_hosts
         // not being written, the waitForAllConditions ensures it's written
         getClusters().forEach { cluster ->
@@ -71,9 +87,7 @@ integTest {
 }
 
 testClusters.integTest {
-    testDistribution = "ARCHIVE"
-    // Cluster shrink exception thrown if we try to set numberOfNodes to 1, so only apply if > 1
-
+    testDistribution = "INTEG_TEST"
     // When running integration tests it doesn't forward the --debug-jvm to the cluster anymore
     // i.e. we have to use a custom property to flag when we want to debug elasticsearch JVM
     // since we also support multi node integration tests we increase debugPort per node
