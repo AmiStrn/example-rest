@@ -5,4 +5,4 @@
         h: component
 
   - match:
-      $body: /^my-rest-plugin\n$/
+      $body: /^opensearch-rest-plugin\n$/

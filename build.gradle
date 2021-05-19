@@ -4,8 +4,8 @@ apply plugin: 'opensearch.opensearchplugin'
 apply plugin: 'opensearch.yaml-rest-test'
 
 opensearchplugin {
-    name 'my-rest-plugin'
-    description 'Custom REST plugin'
+    name 'opensearch-rest-plugin'
+    description 'Custom OpenSearch REST plugin for educational purposes'
     classname 'org.opensearch.rest.action.HelloWorldPlugin'
     licenseFile rootProject.file('LICENSE.txt')
     noticeFile rootProject.file('NOTICE.txt')

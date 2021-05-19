@@ -30,8 +30,8 @@ public class RestHelloWorldAction extends BaseRestHandler {
     @Override
     public List<Route> routes() {
         return unmodifiableList(asList(
-                new Route(GET, "/hello-world"),
-                new Route(POST, "/hello-world")));
+                new Route(GET, "/_plugins/hello_world"),
+                new Route(POST, "/_plugins/hello_world")));
     }
 
     @Override

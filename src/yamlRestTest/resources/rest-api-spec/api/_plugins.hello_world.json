@@ -1,10 +1,10 @@
 {
-  "hello-world": {
+  "_plugins.hello_world": {
     "stability" : "stable",
     "url": {
       "paths": [
         {
-          "path": "/hello-world",
+          "path": "/_plugins/hello_world",
           "methods": [
             "GET",
             "POST"

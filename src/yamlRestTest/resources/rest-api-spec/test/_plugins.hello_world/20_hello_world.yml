@@ -1,14 +1,14 @@
 ---
 "Default with no name":
   - do:
-      hello-world: {}
+      _plugins.hello_world: {}
 
   - match: {$body: "Hi! Your plugin is installed and working:)" }
 
 ---
 "With name":
   - do:
-      hello-world:
+      _plugins.hello_world:
         body:
           name: Amitai
 
