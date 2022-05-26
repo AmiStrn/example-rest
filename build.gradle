@@ -1,8 +1,9 @@
 buildscript {
     ext {
-        // build.version_qualifier parameter applies to knn plugin artifacts only. OpenSearch version must be set
-        // explicitly as 'opensearch.version' property, for instance opensearch.version=2.0.0-rc1-SNAPSHOT
+        // OpenSearch version must be set explicitly as 'opensearch.version' property, 
+        // for instance opensearch.version=2.0.0-rc1-SNAPSHOT
         opensearch_version = System.getProperty("opensearch.version", "2.0.0-rc1")
+        // For any other release than rc1, change the line below from "rc1" to ""
         version_qualifier = System.getProperty("build.version_qualifier", "rc1")
         opensearch_group = "org.opensearch"
     }
@@ -67,7 +68,7 @@ dependencies {
     yamlRestTestImplementation 'org.apache.logging.log4j:log4j-core:2.17.1'
 }
 
-licenseHeaders.enabled = true
+// disabling some unnecessary validations for this plugin
 // no need to validate pom, as we do not upload to maven/sonatype
 validateNebulaPom.enabled = false
 dependencyLicenses.enabled = false
