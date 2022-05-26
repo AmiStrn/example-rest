@@ -28,7 +28,6 @@ buildscript {
 plugins {
     id 'java'
     id 'idea'
-    id 'jacoco'
 }
 
 apply plugin: 'opensearch.yaml-rest-test'
@@ -65,7 +64,7 @@ allprojects {
 //****************************************************************************/
 dependencies {
     // required for the yaml test to run
-    yamlRestTestImplementation 'org.apache.logging.log4j:log4j-core:2.11.1'
+    yamlRestTestImplementation 'org.apache.logging.log4j:log4j-core:2.17.1'
 }
 
 licenseHeaders.enabled = true
