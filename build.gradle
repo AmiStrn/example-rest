@@ -1,7 +1,43 @@
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'opensearch.opensearchplugin'
+buildscript {
+    ext {
+        // OpenSearch version must be set explicitly as 'opensearch.version' property, 
+        // for instance opensearch.version=2.0.0-rc1-SNAPSHOT
+        opensearch_version = System.getProperty("opensearch.version", "2.0.0-rc1")
+        // For any other release than rc1, change the line below from "rc1" to ""
+        version_qualifier = System.getProperty("build.version_qualifier", "rc1")
+        opensearch_group = "org.opensearch"
+    }
+
+    // This isn't applying from repositories.gradle so repeating git diff it here
+    repositories {
+        mavenLocal()
+        maven { url "https://aws.oss.sonatype.org/content/repositories/snapshots" }
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        classpath "${opensearch_group}.gradle:build-tools:${opensearch_version}"
+    }
+}
+
+//****************************************************************************/
+// Build configurations
+//****************************************************************************/
+
+
+plugins {
+    id 'java'
+    id 'idea'
+}
+
 apply plugin: 'opensearch.yaml-rest-test'
+apply plugin: 'opensearch.opensearchplugin'
+
+ext {
+    isSnapshot = "true" == System.getProperty("build.snapshot", "true")
+    projectSubstitutions = [:]
+}
 
 opensearchplugin {
     name 'opensearch-rest-plugin'
@@ -11,29 +47,36 @@ opensearchplugin {
     noticeFile rootProject.file('NOTICE.txt')
 }
 
+allprojects {
+    group = "org.opensearch"
 
-// disabling some unnecessary validations for this plugin
-testingConventions.enabled = false
-loggerUsageCheck.enabled = false
-validateNebulaPom.enabled = false
-
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-        mavenLocal()
+    version = "${opensearch_version}" - "-SNAPSHOT" + ".0"
+    if (isSnapshot) {
+        version += "-SNAPSHOT"
     }
 
-    dependencies {
-        classpath "org.opensearch.gradle:build-tools:1.0.0-beta1"
+    plugins.withId('java') {
+        sourceCompatibility = targetCompatibility = "11"
     }
 }
 
-repositories {
-    mavenLocal()
-}
-
+//****************************************************************************/
+// Dependencies
+//****************************************************************************/
 dependencies {
     // required for the yaml test to run
-    yamlRestTestImplementation 'org.apache.logging.log4j:log4j-core:2.11.1'
+    yamlRestTestImplementation 'org.apache.logging.log4j:log4j-core:2.17.1'
 }
+
+// disabling some unnecessary validations for this plugin
+// no need to validate pom, as we do not upload to maven/sonatype
+validateNebulaPom.enabled = false
+dependencyLicenses.enabled = false
+thirdPartyAudit.enabled = false
+// Allow @Test to be used in test classes not inherited from LuceneTestCase.
+// see https://github.com/elastic/elasticsearch/blob/26c3dd6857d047054b2108f85bc2b040a9c81fe4/build-tools-internal/src/main/resources/forbidden/es-test-signatures.txt
+forbiddenApis.ignoreFailures = true
+// Allow test cases to be named Tests without having to be inherited from LuceneTestCase.
+// see https://github.com/elastic/elasticsearch/blob/323f312bbc829a63056a79ebe45adced5099f6e6/buildSrc/src/main/java/org/elasticsearch/gradle/precommit/TestingConventionsTasks.java
+testingConventions.enabled = false
+loggerUsageCheck.enabled = false
